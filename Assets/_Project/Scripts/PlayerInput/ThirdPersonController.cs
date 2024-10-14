@@ -17,19 +17,18 @@ namespace Shmoove
         //movement fields
         private Rigidbody rb;
         [SerializeField]
-        private float movementForce = 3f;
+        private float movementForce = 100f;
         [SerializeField]
-        private float jumpForce = 8f;
+        private float jumpForce = 12f;
         [SerializeField]
-        private float walkSpeed = 5f;
+        private float walkSpeed = 6f;
         [SerializeField]
-        private float sprintSpeed = 8f;
+        private float sprintSpeed = 14f;
         [SerializeField]
-        private float gravityMultiplier = 6f;
+        private float gravityMultiplier = 3f;
         [SerializeField]
         private int airJump = 1;
 
-        private bool isSprinting = false;
 
         private Vector3 forceDirection = Vector3.zero;
 
@@ -95,11 +94,11 @@ namespace Shmoove
                 rb.velocity = new Vector3(horizontalVelocity.x, rb.velocity.y, horizontalVelocity.z);
             }
 
-                // called to face the character where we're inputting to move to
-                LookAt();
+            // called to face the character where we're inputting to move to
+            LookAt();
 
             // Debug log to verify sprint functionality
-            Debug.Log($"Current Speed: {rb.velocity.magnitude}, Max Speed: {currentMaxSpeed}, Sprinting: {sprint.IsPressed()}");
+            //Debug.Log($"Current Speed: {rb.velocity.magnitude}, Max Speed: {currentMaxSpeed}, Sprinting: {sprint.IsPressed()}");
         }
 
         // function for implementing the playermodel looking in a direction

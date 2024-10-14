@@ -1070,7 +1070,7 @@ GameObject:
   - component: {fileID: 1017005145}
   - component: {fileID: 1017005144}
   m_Layer: 0
-  m_Name: Ground (2)
+  m_Name: No Wall Run Yet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1746,7 +1746,7 @@ GameObject:
   - component: {fileID: 1460641584}
   - component: {fileID: 1460641583}
   m_Layer: 0
-  m_Name: Ground (3)
+  m_Name: You cant get here yet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
