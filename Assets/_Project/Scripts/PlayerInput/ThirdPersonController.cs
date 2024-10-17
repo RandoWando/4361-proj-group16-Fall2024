@@ -8,38 +8,65 @@ namespace Shmoove
 {
     public class ThirdPersonController : MonoBehaviour
     {
+        [Header("Inputs")]
         //inputs from the input controller
         private PlayerControls playerControls;
         private InputAction jump;
         private InputAction move;
         private InputAction sprint;
 
-        //movement fields
-        private Rigidbody rb;
+        [Header("Scene Objects")]
         [SerializeField]
-        private float movementForce = 100f;
+        private Camera playerCamera;
+        private Rigidbody rb;
+
+        //movement fields
+        [Header("Movement")]
+        [SerializeField]
+        public float walkSpeed = 6f;
+        [SerializeField]
+        public float sprintSpeed = 10f;
+        
+        private float moveSpeed;
+        [SerializeField]
+        public float groundDrag = 1f;
+        //private bool comboActive;     // REMOVE IF EVENTUALLY UNUSED
+
+        [Header("Jumping")]
         [SerializeField]
         private float jumpForce = 12f;
-        [SerializeField]
-        private float walkSpeed = 6f;
-        [SerializeField]
-        private float sprintSpeed = 14f;
         [SerializeField]
         private float gravityMultiplier = 3f;
         [SerializeField]
         private int airJump = 1;
 
+        private Vector3 moveDirection = Vector3.zero;
 
-        private Vector3 forceDirection = Vector3.zero;
+        // Player movement tracker
+        public movementState state;
+        public enum movementState
+        {
+            walking,
+            sprinting,
+            //combo,
+            inAir
+        }
 
-        [SerializeField]
-        private Camera playerCamera;
+        // Player debuff state tracker
+        public statusEffects status;
+        public enum statusEffects
+        {
+            None,
+            noControl,
+            noAbilities,
+            lowGrav,
+            extraJump
+        }
 
         // singular startup initialization. Only called once at start
         private void Awake()
         {
             rb = this.GetComponent<Rigidbody>();
-            playerControls = new PlayerControls();
         }
 
         // can be called multiple times, whenever script is loaded
@@ -50,6 +77,7 @@ namespace Shmoove
             Cursor.visible = false;
 
             // using the jump and move controls, just initializes them
+            playerControls = new PlayerControls();
             playerControls.Player.Jump.performed += DoJump;
             move = playerControls.Player.Move;
             sprint = playerControls.Player.Sprint;
@@ -66,17 +94,55 @@ namespace Shmoove
         // called many times a second
         private void FixedUpdate()
         {
-            // Determine current max speed based on sprint input
-            float currentMaxSpeed = sprint.IsPressed() ? sprintSpeed : walkSpeed;
+
+            // called for requisite movement speed handling
+            movementHandler();
+
+            // called to provide movement to the player
+            playerMove();
+
+            // called to face the character where we're inputting to move to
+            LookAt();
+
+            // applying drag based on player situation
+            if (IsGrounded())
+            {
+                rb.drag = groundDrag;
+            }
+            else
+            {
+                rb.drag = 0;
+            }
+
+        }
+
+        private void playerMove()
+        {
+            moveDirection = Vector3.zero;
 
             // movement from player input in 2 dimensions
-            forceDirection += move.ReadValue<Vector2>().x * GetCameraRight(playerCamera) * movementForce;
-            forceDirection += move.ReadValue<Vector2>().y * GetCameraForward(playerCamera) * movementForce;
+            moveDirection += move.ReadValue<Vector2>().x * GetCameraRight(playerCamera);
+            moveDirection += move.ReadValue<Vector2>().y * GetCameraForward(playerCamera);
+            // normalizing so the input is = 1
+            moveDirection = moveDirection.normalized;
 
+            Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
-            // adding movement before setting to zero so we stop when it's let go
-            rb.AddForce(forceDirection, ForceMode.Acceleration);
-            forceDirection = Vector3.zero;
+            // adding movement, limited air control in else 
+            if (IsGrounded())
+                rb.AddForce(moveDirection, ForceMode.Impulse);
+            else
+                rb.AddForce(moveDirection, ForceMode.Impulse);
+
+            Debug.Log($"Current Speed: {Math.Abs(rb.velocity.x) + Math.Abs(rb.velocity.z)}");
+
+            // capping horizontal speeds
+            horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            if (horizontalVelocity.magnitude > moveSpeed)
+            {
+                horizontalVelocity = horizontalVelocity.normalized * moveSpeed;
+                rb.velocity = new Vector3(horizontalVelocity.x, rb.velocity.y, horizontalVelocity.z);
+            }
 
             // when we're in the air and falling
             if (!IsGrounded())
@@ -85,17 +151,6 @@ namespace Shmoove
                 Vector3 extraGravity = (Physics.gravity * gravityMultiplier) - Physics.gravity;
                 rb.AddForce(extraGravity, ForceMode.Acceleration);
             }
-
-            // capping horizontal speeds
-            Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-            if (horizontalVelocity.magnitude > currentMaxSpeed)
-            {
-                horizontalVelocity = horizontalVelocity.normalized * currentMaxSpeed;
-                rb.velocity = new Vector3(horizontalVelocity.x, rb.velocity.y, horizontalVelocity.z);
-            }
-
-            // called to face the character where we're inputting to move to
-            LookAt();
 
             // Debug log to verify sprint functionality
             //Debug.Log($"Current Speed: {rb.velocity.magnitude}, Max Speed: {currentMaxSpeed}, Sprinting: {sprint.IsPressed()}");
@@ -134,12 +189,14 @@ namespace Shmoove
         {
             if (context.performed && IsGrounded())
             {
-                rb.AddForce((Vector3.up * jumpForce), ForceMode.Impulse);
+                Vector3 jumpForce = Vector3.up * this.jumpForce;
+                rb.AddForce(jumpForce, ForceMode.Impulse);
             }
             else if (context.performed && airJump > 0)
             {
-                rb.AddForce((Vector3.up * jumpForce), ForceMode.Impulse);
-                airJump -= 1;
+                Vector3 jumpForce = Vector3.up * this.jumpForce;
+                rb.AddForce(jumpForce, ForceMode.Impulse);
+                airJump--;
             }
         }
 
@@ -166,5 +223,68 @@ namespace Shmoove
                 return false;
             }
         }
+
+        // more consolidated way to handle the 3 movespeeds
+        private void movementHandler()
+        {
+            // state  sprinting
+            if (IsGrounded() && sprint.IsPressed())
+            {
+                state = movementState.sprinting; moveSpeed = sprintSpeed;
+            }
+            // state  walking
+            else if (IsGrounded())
+            {
+                state = movementState.walking; moveSpeed = walkSpeed;
+            }
+            // special extra movestate for maybe something REMOVE IF EVENTUALLY UNUSED
+            //else if (comboActive)
+            //{
+            //    state = movementState.combo; moveSpeed = 1.5f * sprintSpeed;
+            //}
+            // state  inAir
+            else
+            {
+                state = movementState.inAir;
+            }
+        }
+
+        // debuff
+        private void debuffHandler(float time)
+        {
+            switch (status)
+            {
+                case (statusEffects.None):
+                    {
+                        
+                        break;
+                    }
+                case (statusEffects.noControl):
+                    {
+                        break;
+                    }
+                case (statusEffects.noAbilities):
+                {
+
+                        break;
+                }
+                case (statusEffects.lowGrav):
+                {
+
+                        break;
+                }
+                case (statusEffects.extraJump):
+                {
+
+                        break;
+                }
+
+
+            }
+
+
+
+        }
+
     }
 }
