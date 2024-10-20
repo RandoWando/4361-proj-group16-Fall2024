@@ -1,6 +1,9 @@
+// Code written by Ashton Smith, (include your names)
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,11 +17,13 @@ namespace Shmoove
         private InputAction jump;
         private InputAction move;
         private InputAction sprint;
+        [SerializeField]
+        private AbilityManager abilityManager;
 
         [Header("Scene Objects")]
         [SerializeField]
-        private Camera playerCamera;
-        private Rigidbody rb;
+        public Camera playerCamera;
+        public Rigidbody rb;
 
         //movement fields
         [Header("Movement")]
@@ -40,6 +45,12 @@ namespace Shmoove
         [SerializeField]
         private int airJump = 1;
 
+        [Header("Cooldowns and Status Effects")]
+        public HashSet<statusEffects> activeStatuses = new HashSet<statusEffects>();
+        private float abilityCooldownTimer = 0f;
+        [SerializeField] 
+        private float abilityCooldownDuration = 1f; // Adjust as needed
+
         private Vector3 moveDirection = Vector3.zero;
 
         // Player movement tracker
@@ -53,10 +64,9 @@ namespace Shmoove
         }
 
         // Player debuff state tracker
-        public statusEffects status;
         public enum statusEffects
         {
-            None,
+            Cleanse,
             noControl,
             noAbilities,
             lowGrav,
@@ -79,6 +89,7 @@ namespace Shmoove
             // using the jump and move controls, just initializes them
             playerControls = new PlayerControls();
             playerControls.Player.Jump.performed += DoJump;
+            playerControls.Player.Dash.performed += _ => abilityManager.UseAbility("Dash");
             move = playerControls.Player.Move;
             sprint = playerControls.Player.Sprint;
             playerControls.Player.Enable();
@@ -88,6 +99,7 @@ namespace Shmoove
         private void OnDisable()
         {
             playerControls.Player.Jump.performed -= DoJump;
+            playerControls.Player.Dash.performed -= _ => abilityManager.UseAbility("Dash");
             playerControls.Player.Disable();
         }
 
@@ -104,6 +116,9 @@ namespace Shmoove
             // called to face the character where we're inputting to move to
             LookAt();
 
+            // applying gravity to the player when we're off the ground
+            applyGravity();
+
             // applying drag based on player situation
             if (IsGrounded())
             {
@@ -114,11 +129,23 @@ namespace Shmoove
                 rb.drag = 0;
             }
 
+            // extra jump status application
+            if (IsGrounded())
+            {
+                airJump = activeStatuses.Contains(statusEffects.extraJump) ? 2 : 1;
+            }
+
         }
 
         private void playerMove()
         {
             moveDirection = Vector3.zero;
+
+            // checking for no controls status
+            if (activeStatuses.Contains(statusEffects.noControl)) 
+            {
+                return; // don't allow movement if noControl is active
+            }
 
             // movement from player input in 2 dimensions
             moveDirection += move.ReadValue<Vector2>().x * GetCameraRight(playerCamera);
@@ -134,7 +161,7 @@ namespace Shmoove
             else
                 rb.AddForce(moveDirection, ForceMode.Impulse);
 
-            Debug.Log($"Current Speed: {Math.Abs(rb.velocity.x) + Math.Abs(rb.velocity.z)}");
+            UnityEngine.Debug.Log($"Current Speed: {Math.Abs(rb.velocity.x) + Math.Abs(rb.velocity.z)}");
 
             // capping horizontal speeds
             horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
@@ -142,14 +169,6 @@ namespace Shmoove
             {
                 horizontalVelocity = horizontalVelocity.normalized * moveSpeed;
                 rb.velocity = new Vector3(horizontalVelocity.x, rb.velocity.y, horizontalVelocity.z);
-            }
-
-            // when we're in the air and falling
-            if (!IsGrounded())
-            {
-                // applying increased gravity for snappier and cleaner feel
-                Vector3 extraGravity = (Physics.gravity * gravityMultiplier) - Physics.gravity;
-                rb.AddForce(extraGravity, ForceMode.Acceleration);
             }
 
             // Debug log to verify sprint functionality
@@ -169,7 +188,7 @@ namespace Shmoove
         }
 
         // returning normalized right direction from the camera so we can move based on camera pov
-        private Vector3 GetCameraRight(Camera playerCamera)
+        public Vector3 GetCameraRight(Camera playerCamera)
         {
             Vector3 right = playerCamera.transform.right;
             right.y = 0;
@@ -177,7 +196,7 @@ namespace Shmoove
         }
 
         // returning normalized forward direction from the camera so we can move based on camera pov
-        private Vector3 GetCameraForward(Camera playerCamera)
+        public Vector3 GetCameraForward(Camera playerCamera)
         {
             Vector3 forward = playerCamera.transform.forward;
             forward.y = 0;
@@ -201,7 +220,7 @@ namespace Shmoove
         }
 
         // raycast based method of determining if the player is on the ground right now
-        private bool IsGrounded()
+        public bool IsGrounded()
         {
             //Debug.Log("IsGrounded check initiated");
 
@@ -249,42 +268,52 @@ namespace Shmoove
             }
         }
 
-        // debuff
-        private void debuffHandler(float time)
+        // applying the status effect via coroutine
+        public void ApplyStatus(statusEffects status, float duration)
         {
-            switch (status)
+            // cleansing all statuses
+            if (status == statusEffects.Cleanse)
             {
-                case (statusEffects.None):
-                    {
-                        
-                        break;
-                    }
-                case (statusEffects.noControl):
-                    {
-                        break;
-                    }
-                case (statusEffects.noAbilities):
-                {
-
-                        break;
-                }
-                case (statusEffects.lowGrav):
-                {
-
-                        break;
-                }
-                case (statusEffects.extraJump):
-                {
-
-                        break;
-                }
-
-
+                activeStatuses.Clear();
             }
-
-
-
+            else
+            {
+                activeStatuses.Add(status);
+                StartCoroutine(RemoveStatusAfterDelay(status, duration));
+            }
         }
 
+        // removing the started status effect from passed in applied status
+        private IEnumerator RemoveStatusAfterDelay(statusEffects status, float duration)
+        {
+            yield return new WaitForSeconds(duration);
+            activeStatuses.Remove(status);
+        }
+
+        // applying gravity, made it a function only because I made lowgrav status effect
+        private void applyGravity()
+        {
+            Vector3 extraGravity;
+
+            // checking if we have a lowgrav status
+            switch (activeStatuses.Contains(statusEffects.lowGrav))
+            {
+                // if we dont:
+                case false:
+                {
+                    // calculating increased gravity for snappier and cleaner feel
+                    extraGravity = (Physics.gravity * gravityMultiplier) - Physics.gravity;
+                    // applying force of gravity
+                    break;
+                }
+                case true:
+                {
+                    extraGravity = (Physics.gravity * 1.5f) - Physics.gravity;
+                    break;
+                }
+            }
+            // applying force of gravity
+            rb.AddForce(extraGravity, ForceMode.Acceleration);
+        }
     }
 }
