@@ -133,7 +133,7 @@ namespace Shmoove
             Vector3 curVelocity = playerController.rb.velocity;
 
             // applying force to dash with
-            playerController.GetComponent<Rigidbody>().AddForce(dashDirection + curVelocity, ForceMode.Impulse);
+            playerController.GetComponent<Rigidbody>().AddForce(dashDirection*dashForce + curVelocity, ForceMode.Impulse);
         }
 
         // called when we finish the effect

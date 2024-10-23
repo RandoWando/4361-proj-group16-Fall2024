@@ -47,6 +47,10 @@ ExportedObj/
 *.opendb
 *.VC.db
 
+# VS upgrade related files
+UpgradeLog*.XML
+UpgradeLog*.htm
+
 # Unity3D generated meta files
 *.pidb.meta
 *.pdb.meta
