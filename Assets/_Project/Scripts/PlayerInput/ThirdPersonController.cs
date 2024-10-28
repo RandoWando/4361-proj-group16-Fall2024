@@ -117,7 +117,10 @@ namespace Shmoove
             LookAt();
 
             // applying gravity to the player when we're off the ground
-            applyGravity();
+            if (!IsGrounded())
+            {
+                applyGravity();
+            }
 
             // applying drag based on player situation
             if (IsGrounded())
@@ -161,7 +164,7 @@ namespace Shmoove
             else
                 rb.AddForce(moveDirection, ForceMode.Impulse);
 
-            UnityEngine.Debug.Log($"Current Speed: {Math.Abs(rb.velocity.x) + Math.Abs(rb.velocity.z)}");
+            //UnityEngine.Debug.Log($"Current Speed: {Math.Abs(rb.velocity.x) + Math.Abs(rb.velocity.z)}");
 
             // capping horizontal speeds
             horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
@@ -293,7 +296,7 @@ namespace Shmoove
         // applying gravity, made it a function only because I made lowgrav status effect
         private void applyGravity()
         {
-            Vector3 extraGravity;
+            Vector3 gravity;
 
             // checking if we have a lowgrav status
             switch (activeStatuses.Contains(statusEffects.lowGrav))
@@ -302,18 +305,19 @@ namespace Shmoove
                 case false:
                 {
                     // calculating increased gravity for snappier and cleaner feel
-                    extraGravity = (Physics.gravity * gravityMultiplier) - Physics.gravity;
+                    gravity = (Physics.gravity * gravityMultiplier);
                     // applying force of gravity
                     break;
                 }
                 case true:
                 {
-                    extraGravity = (Physics.gravity * 1.5f) - Physics.gravity;
+                    gravity = (Physics.gravity * 1.5f);
                     break;
                 }
             }
             // applying force of gravity
-            rb.AddForce(extraGravity, ForceMode.Acceleration);
+            rb.AddForce(gravity, ForceMode.Acceleration);
         }
+
     }
 }

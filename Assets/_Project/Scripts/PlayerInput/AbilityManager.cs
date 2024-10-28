@@ -61,7 +61,7 @@ namespace Shmoove
             if (playerController.activeStatuses.Contains(ThirdPersonController.statusEffects.noAbilities)
                 || playerController.activeStatuses.Contains(ThirdPersonController.statusEffects.noControl))
             {
-                Debug.Log("Can't use abilities due to status effect!");
+                //Debug.Log("Can't use abilities due to status effect!");
                 return false;
             }
 
@@ -83,12 +83,12 @@ namespace Shmoove
         // coroutine for cooldown of ability (aka timer)
         private IEnumerator AbilityCoroutine(Ability ability)
         {
-            Debug.Log($"Using ability: {ability.name}");
+            //Debug.Log($"Using ability: {ability.name}");
             ability.currentCooldown = ability.cooldownTime;
             yield return new WaitForSeconds(ability.activeTime);
             // cleanup and finishing effects call
             ability.OnAbilityEnd(playerController);
-            Debug.Log($"Ability ended: {ability.name}");
+            //Debug.Log($"Ability ended: {ability.name}");
         }
 
         // check function to see if a given ability is available
@@ -106,7 +106,7 @@ namespace Shmoove
     {
         // making it available in the editor and defining it
         [SerializeField] 
-        private float dashForce = 20f;
+        private float dashForce = 30f;
         [SerializeField] 
         private float groundDashMultiplier = 5f;
 
@@ -132,8 +132,10 @@ namespace Shmoove
             // player rb current velocity for adding dash to
             Vector3 curVelocity = playerController.rb.velocity;
 
+            Debug.Log($"Force applied: {Vector3.Magnitude(dashDirection*dashForce)}");
+
             // applying force to dash with
-            playerController.GetComponent<Rigidbody>().AddForce(dashDirection*dashForce + curVelocity, ForceMode.Impulse);
+            playerController.GetComponent<Rigidbody>().AddForce(dashDirection*dashForce, ForceMode.Impulse);
         }
 
         // called when we finish the effect
