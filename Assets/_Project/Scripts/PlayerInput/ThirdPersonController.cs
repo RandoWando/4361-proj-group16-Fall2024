@@ -164,7 +164,7 @@ namespace Shmoove
             else
                 rb.AddForce(moveDirection, ForceMode.Impulse);
 
-            //UnityEngine.Debug.Log($"Current Speed: {Math.Abs(rb.velocity.x) + Math.Abs(rb.velocity.z)}");
+            UnityEngine.Debug.Log($"Current Speed: {Math.Abs(rb.velocity.x) + Math.Abs(rb.velocity.z)}");
 
             // capping horizontal speeds
             horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
