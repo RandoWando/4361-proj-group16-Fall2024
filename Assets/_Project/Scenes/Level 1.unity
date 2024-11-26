@@ -3884,7 +3884,7 @@ Transform:
   m_GameObject: {fileID: 365428064}
   serializedVersion: 2
   m_LocalRotation: {x: 0.20701528, y: -0.00000003024586, z: 0.000000006258998, w: 0.97833776}
-  m_LocalPosition: {x: 6.52, y: 17.2, z: -10.08}
+  m_LocalPosition: {x: 1624.6, y: 138.4, z: 552}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7733,7 +7733,7 @@ Transform:
   m_GameObject: {fileID: 821981680}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000002139684, y: 0.000000017209187, z: -0.00000000771578, w: 1}
-  m_LocalPosition: {x: 0.000019550323, y: -4.842525e-13, z: -1.1063512e-12}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -10540,8 +10540,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1093876436}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.023193557, y: 0.000000039671317, z: -0.000000016336568, w: 0.99973106}
-  m_LocalPosition: {x: 0.000019550323, y: -4.842525e-13, z: -1.1063512e-12}
+  m_LocalRotation: {x: -0.023193527, y: 0.000000039671317, z: -0.00000001633657, w: 0.99973106}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -13505,7 +13505,7 @@ Transform:
   m_GameObject: {fileID: 1310228450}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.52, y: 10.2, z: 3.92}
+  m_LocalPosition: {x: 1624.6, y: 131.4, z: 566}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -18891,8 +18891,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2010269057}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.023298552, y: 0.000000038869125, z: -0.000000018162817, w: 0.9997286}
-  m_LocalPosition: {x: 0.000019550323, y: -4.842525e-13, z: -1.1063512e-12}
+  m_LocalRotation: {x: 0.023298595, y: 0.000000038869125, z: -0.000000018162819, w: 0.9997286}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
