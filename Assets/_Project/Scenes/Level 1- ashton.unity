@@ -10207,7 +10207,6 @@ MonoBehaviour:
     activeTime: 2
     currentCooldown: 0
     dashForce: 75
-    groundDashMultiplier: 5
 --- !u!1001 &1312574982
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16174,7 +16173,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 61fb50495bb0f6c4980fd11d269ac31d, type: 3}
       propertyPath: m_LocalScale.y
-      value: 2.3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 61fb50495bb0f6c4980fd11d269ac31d, type: 3}
       propertyPath: m_LocalScale.z
