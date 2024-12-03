@@ -129,9 +129,6 @@ namespace Shmoove
             // calculating the players look direction for dash
             Vector3 dashDirection = playerController.playerCamera.transform.forward;
 
-            // player rb current velocity for adding dash to
-            Vector3 curVelocity = playerController.rb.velocity;
-
             Debug.Log($"Force applied: {Vector3.Magnitude(dashDirection*dashForce)}");
 
             // applying force to dash with
