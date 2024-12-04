@@ -10,6 +10,14 @@ namespace Shmoove
         public void ToMainMenu()
         {
             SceneManager.LoadScene("Level 1- ashton");
+      public void PlayGame()
+        {
+            SceneManager.LoadScene("Level 1");
+        }
+
+        public void QuitGame()
+        {
+            Application.Quit();
         }
     }
 }

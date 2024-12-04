@@ -47,7 +47,7 @@ namespace Shmoove
         private void Update()
         {
             Vector3 position = transform.position; // Get updated position every frame
-            Debug.Log("X: " + position.x + ", Y: " + position.y + "Z: " + position.z);
+
             foreach (var ability in abilities)
             {
                 // decrement remaining cooldown duration
@@ -59,10 +59,14 @@ namespace Shmoove
 
             if (position.y < -30)
             {
+
                 SceneManager.LoadScene("LoseScene");
                 //SceneManager.sceneLoaded += LoseSceneLoaded;
 
                
+            }
+
+                transform.position = new Vector3(5.5f, 10f, 3.90f);
             }
         }
 
