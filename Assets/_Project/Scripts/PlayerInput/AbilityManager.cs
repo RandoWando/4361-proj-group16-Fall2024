@@ -77,20 +77,6 @@ namespace Shmoove
 
               
             }
-        //private void LoseSceneLoaded(Scene scene, LoadSceneMode mode)
-        //{
-            
-        //    Button myButton = GameObject.Find("MainMenuButton").GetComponent<Button>();
-
-        //    if (myButton != null)
-        //    {
-                
-        //        myButton.onClick.AddListener(() => MainMenuPressed());
-        //    }
-
-        //    SceneManager.sceneLoaded -= LoseSceneLoaded;
-        //}
-
         
 
         // ability use method, calls cooldown coroutine 
