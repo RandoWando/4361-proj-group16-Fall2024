@@ -59,7 +59,7 @@ namespace Shmoove
                 }
             }
 
-            if(position.x > 5)
+            if(position.y > 544.84)
             {
                 SceneManager.LoadScene("WinScene");
             }
