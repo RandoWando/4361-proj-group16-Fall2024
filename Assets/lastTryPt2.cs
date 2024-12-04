@@ -12,9 +12,14 @@ namespace Shmoove
             // locking cursor
             Cursor.lockState = CursorLockMode.None;
         }
-        public void ToMainMenu()
+        public void goToStart()
         {
             SceneManager.LoadScene("Level 1- ashton");
+        }
+
+        public void goToMainMenu()
+        {
+            SceneManager.LoadScene("MainMenu");
         }
     }
 }

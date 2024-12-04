@@ -48,6 +48,8 @@ namespace Shmoove
         {
             Vector3 position = transform.position; // Get updated position every frame
 
+            Debug.Log("X: " + position.x + " Y: " + position.y + " Z: " + position.z);
+
             foreach (var ability in abilities)
             {
                 // decrement remaining cooldown duration
@@ -55,6 +57,11 @@ namespace Shmoove
                 {
                     ability.currentCooldown -= Time.deltaTime;
                 }
+            }
+
+            if(position.x > 5)
+            {
+                SceneManager.LoadScene("WinScene");
             }
 
             if (position.y < -13)
