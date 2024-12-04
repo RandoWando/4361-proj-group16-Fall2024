@@ -9,11 +9,10 @@ EditorBuildSettings:
     path: Assets/_Project/Scenes/LoseScene.unity
     guid: fca52a3ed81415f40bab0fee988ddbc0
   - enabled: 1
-    path: Assets/_Project/Scenes/Level 1- ashton.unity
     path: Assets/_Project/Scenes/Background.unity
     guid: 1eaf0a635d18f2545871dcfaa4e72a55
   - enabled: 1
-    path: Assets/_Project/Scenes/Level 1.unity
+    path: Assets/_Project/Scenes/Level 1- ashton.unity
     guid: 633e3c1bc6c81324e933719a871d8717
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: d0a343878b4e304418abe2903132b702, type: 2}

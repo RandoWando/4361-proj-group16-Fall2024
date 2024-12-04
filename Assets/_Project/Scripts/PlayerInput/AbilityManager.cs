@@ -57,16 +57,16 @@ namespace Shmoove
                 }
             }
 
-            if (position.y < -30)
+            if (position.y < -13)
             {
 
                 SceneManager.LoadScene("LoseScene");
                 //SceneManager.sceneLoaded += LoseSceneLoaded;
 
-               
+
             }
 
-                transform.position = new Vector3(5.5f, 10f, 3.90f);
+              
             }
         //private void LoseSceneLoaded(Scene scene, LoadSceneMode mode)
         //{
