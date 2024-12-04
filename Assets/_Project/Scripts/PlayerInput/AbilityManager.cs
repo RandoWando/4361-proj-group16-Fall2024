@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using static Shmoove.AbilityManager;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Shmoove
 {
@@ -57,9 +59,28 @@ namespace Shmoove
 
             if (position.y < -30)
             {
-                transform.position = new Vector3(5.5f, 10f, 3.90f);
+                SceneManager.LoadScene("LoseScene");
+                //SceneManager.sceneLoaded += LoseSceneLoaded;
+
+               
             }
         }
+
+        //private void LoseSceneLoaded(Scene scene, LoadSceneMode mode)
+        //{
+            
+        //    Button myButton = GameObject.Find("MainMenuButton").GetComponent<Button>();
+
+        //    if (myButton != null)
+        //    {
+                
+        //        myButton.onClick.AddListener(() => MainMenuPressed());
+        //    }
+
+        //    SceneManager.sceneLoaded -= LoseSceneLoaded;
+        //}
+
+        
 
         // ability use method, calls cooldown coroutine 
         public bool UseAbility(string abilityName)
