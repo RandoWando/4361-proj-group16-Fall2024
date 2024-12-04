@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/_Project/Scenes/MainMenu.unity
     guid: 1eaf0a635d18f2545871dcfaa4e72a55
   - enabled: 1
-    path: Assets/_Project/Scenes/Level 1- ashton.unity
+    path: Assets/_Project/Scenes/Level 1 with new spire.unity
     guid: 633e3c1bc6c81324e933719a871d8717
   - enabled: 1
     path: Assets/_Project/Scenes/WinScene.unity
