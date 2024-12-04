@@ -6050,7 +6050,7 @@ Transform:
   m_GameObject: {fileID: 365428064}
   serializedVersion: 2
   m_LocalRotation: {x: 0.20701528, y: -0.00000003024586, z: 0.000000006258998, w: 0.97833776}
-  m_LocalPosition: {x: 1298, y: 353, z: 591.5}
+  m_LocalPosition: {x: 10.4, y: 4.8, z: 14.780001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -23019,7 +23019,7 @@ Transform:
   m_GameObject: {fileID: 1310228450}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1298, y: 346, z: 605.5}
+  m_LocalPosition: {x: 10.4, y: -2.2, z: 28.78}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -23102,6 +23102,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 78983c2d-40b2-4f3e-93a5-a84551161b6e
     m_ActionName: Player/Dash[/Keyboard/e]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 25a27a6e-9ade-4a68-87c2-1caaa2517b7e
+    m_ActionName: Player/GroundPound[/Keyboard/q]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: KBM
   m_DefaultActionMap: Player
@@ -23151,7 +23155,7 @@ MonoBehaviour:
   jumpForce: 22
   gravityMultiplier: 4
   airJump: 2
-  abilityCooldownDuration: 1
+  abilityCooldownDuration: 0
   state: 0
 --- !u!114 &1310228457
 MonoBehaviour:
@@ -23171,7 +23175,13 @@ MonoBehaviour:
     cooldownTime: 1
     activeTime: 2
     currentCooldown: 0
-    dashForce: 75
+    dashForce: 500
+  groundProundAbility:
+    name: GroundPound
+    cooldownTime: 0
+    activeTime: 0
+    currentCooldown: 0
+    groundPoundForce: 100
 --- !u!1001 &1312574982
 PrefabInstance:
   m_ObjectHideFlags: 0

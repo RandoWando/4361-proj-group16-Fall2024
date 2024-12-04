@@ -44,10 +44,10 @@ namespace Shmoove
         private float gravityMultiplier = 3f;
         [SerializeField]
         private int airJump = 1;
-
-        [Header("Cooldowns and Status Effects")]
+        
         public HashSet<statusEffects> activeStatuses = new HashSet<statusEffects>();
         private float abilityCooldownTimer = 0f;
+        [Header("Cooldowns and Status Effects")]
         [SerializeField] 
         private float abilityCooldownDuration = 1f; // Adjust as needed
 
@@ -90,6 +90,7 @@ namespace Shmoove
             playerControls = new PlayerControls();
             playerControls.Player.Jump.performed += DoJump;
             playerControls.Player.Dash.performed += _ => abilityManager.UseAbility("Dash");
+            playerControls.Player.GroundPound.performed += _ => abilityManager.UseAbility("GroundPound");
             move = playerControls.Player.Move;
             sprint = playerControls.Player.Sprint;
             playerControls.Player.Enable();
@@ -100,6 +101,7 @@ namespace Shmoove
         {
             playerControls.Player.Jump.performed -= DoJump;
             playerControls.Player.Dash.performed -= _ => abilityManager.UseAbility("Dash");
+            playerControls.Player.GroundPound.performed -= _ => abilityManager.UseAbility("GroundPound");
             playerControls.Player.Disable();
         }
 
@@ -164,7 +166,7 @@ namespace Shmoove
             else
                 rb.AddForce(moveDirection, ForceMode.Impulse);
 
-            UnityEngine.Debug.Log($"Current Speed: {Math.Abs(rb.velocity.x) + Math.Abs(rb.velocity.z)}");
+            // UnityEngine.Debug.Log($"Current Speed: {Math.Abs(rb.velocity.x) + Math.Abs(rb.velocity.z)}");
 
             // capping horizontal speeds
             horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
@@ -206,22 +208,6 @@ namespace Shmoove
             return forward.normalized;
         }
 
-        // applying jump to player when called
-        private void DoJump(InputAction.CallbackContext context)
-        {
-            if (context.performed && IsGrounded())
-            {
-                Vector3 jumpForce_ = Vector3.up * this.jumpForce;
-                rb.AddForce(jumpForce_, ForceMode.Impulse);
-            }
-            else if (context.performed && airJump > 0)
-            {
-                Vector3 jumpForce_ = Vector3.up * this.jumpForce;
-                rb.AddForce(jumpForce_, ForceMode.Impulse);
-                airJump--;
-            }
-        }
-
         // raycast based method of determining if the player is on the ground right now
         public bool IsGrounded()
         {
@@ -243,6 +229,22 @@ namespace Shmoove
             {
                 //Debug.Log($"Not grounded");
                 return false;
+            }
+        }
+
+        // applying jump to player when called
+        private void DoJump(InputAction.CallbackContext context)
+        {
+            if (context.performed && IsGrounded())
+            {
+                Vector3 jumpForce_ = Vector3.up * this.jumpForce;
+                rb.AddForce(jumpForce_, ForceMode.Impulse);
+            }
+            else if (context.performed && airJump > 0)
+            {
+                Vector3 jumpForce_ = Vector3.up * this.jumpForce;
+                rb.AddForce(jumpForce_, ForceMode.Impulse);
+                airJump--;
             }
         }
 

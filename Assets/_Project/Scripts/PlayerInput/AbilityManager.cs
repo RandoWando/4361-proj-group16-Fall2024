@@ -16,6 +16,7 @@ namespace Shmoove
         private ThirdPersonController playerController;
 
         public DashAbility dashAbility;
+        public GroundPoundAbility groundProundAbility;
 
         // ability abstract base class to be used
         [System.Serializable]
@@ -41,6 +42,7 @@ namespace Shmoove
         {
             // initialize abilities
             abilities.Add(dashAbility);
+            abilities.Add(groundProundAbility);
         }
 
         // called many times a second, decrements cooldown timers per ability
@@ -48,7 +50,7 @@ namespace Shmoove
         {
             Vector3 position = transform.position; // Get updated position every frame
 
-            Debug.Log("X: " + position.x + " Y: " + position.y + " Z: " + position.z);
+            // Debug.Log("X: " + position.x + " Y: " + position.y + " Z: " + position.z);
 
             foreach (var ability in abilities)
             {
@@ -120,12 +122,19 @@ namespace Shmoove
         // coroutine for cooldown of ability (aka timer)
         private IEnumerator AbilityCoroutine(Ability ability)
         {
-            //Debug.Log($"Using ability: {ability.name}");
+            Debug.Log($"Using ability: {ability.name}");
+
+            // If ability has no cooldown, skip the corountine
+            if (ability.cooldownTime == 0F)
+            {
+                yield return new WaitForSeconds(0F);
+            }
+
             ability.currentCooldown = ability.cooldownTime;
             yield return new WaitForSeconds(ability.activeTime);
             // cleanup and finishing effects call
             ability.OnAbilityEnd(playerController);
-            //Debug.Log($"Ability ended: {ability.name}");
+            Debug.Log($"Ability ended: {ability.name}");
         }
 
         // check function to see if a given ability is available
@@ -162,12 +171,44 @@ namespace Shmoove
         public override void Activate(ThirdPersonController playerController)
         {
             // calculating the players look direction for dash
-            Vector3 dashDirection = playerController.playerCamera.transform.forward;
+            //Vector3 dashDirection = playerController.playerCamera.transform.forward;
+            Vector3 dashDirection = playerController.transform.forward;
 
             Debug.Log($"Force applied: {Vector3.Magnitude(dashDirection*dashForce)}");
 
-            // applying force to dash with
+            // applying force to dash 
             playerController.GetComponent<Rigidbody>().AddForce(dashDirection*dashForce, ForceMode.Impulse);
+        }
+
+        // called when we finish the effect
+        public override void OnAbilityEnd(ThirdPersonController playerController)
+        {
+            // any cleanup or additional effects here
+            
+        }
+    }
+
+    [System.Serializable]
+    public class GroundPoundAbility : Ability
+    {
+        // making it available in the editor and defining it
+        [SerializeField] 
+        private float groundPoundForce = 30f;
+
+        // constructor with the ability values and such
+        public GroundPoundAbility()
+        {
+            name = "GroundPound";
+            cooldownTime = 0f;
+            activeTime = 0f;
+        }
+
+        // function for activation of the specific ability, passes in playercontroller
+        public override void Activate(ThirdPersonController playerController)
+        {
+            Vector3 groundPoundForce_ = Vector3.down * this.groundPoundForce;
+            Debug.Log($"GP Force applied");
+            playerController.GetComponent<Rigidbody>().AddForce(groundPoundForce_, ForceMode.Impulse);
         }
 
         // called when we finish the effect
