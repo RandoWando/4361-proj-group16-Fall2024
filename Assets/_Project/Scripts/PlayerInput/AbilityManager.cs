@@ -45,7 +45,6 @@ namespace Shmoove
         private void Update()
         {
             Vector3 position = transform.position; // Get updated position every frame
-            Debug.Log("X: " + position.x + ", Y: " + position.y + "Z: " + position.z);
             foreach (var ability in abilities)
             {
                 // decrement remaining cooldown duration
