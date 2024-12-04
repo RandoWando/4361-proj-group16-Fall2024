@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using static Shmoove.AbilityManager;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Shmoove
 {
@@ -45,6 +47,7 @@ namespace Shmoove
         private void Update()
         {
             Vector3 position = transform.position; // Get updated position every frame
+
             foreach (var ability in abilities)
             {
                 // decrement remaining cooldown duration
@@ -56,10 +59,32 @@ namespace Shmoove
 
             if (position.y < -30)
             {
-                transform.position = new Vector3(5.5f, 10f, 3.90f);
+
+                SceneManager.LoadScene("LoseScene");
+                //SceneManager.sceneLoaded += LoseSceneLoaded;
+
+               
             }
 
+                transform.position = new Vector3(5.5f, 10f, 3.90f);
+            }
         }
+
+        //private void LoseSceneLoaded(Scene scene, LoadSceneMode mode)
+        //{
+            
+        //    Button myButton = GameObject.Find("MainMenuButton").GetComponent<Button>();
+
+        //    if (myButton != null)
+        //    {
+                
+        //        myButton.onClick.AddListener(() => MainMenuPressed());
+        //    }
+
+        //    SceneManager.sceneLoaded -= LoseSceneLoaded;
+        //}
+
+        
 
         // ability use method, calls cooldown coroutine 
         public bool UseAbility(string abilityName)
@@ -135,9 +160,6 @@ namespace Shmoove
         {
             // calculating the players look direction for dash
             Vector3 dashDirection = playerController.playerCamera.transform.forward;
-
-            // player rb current velocity for adding dash to
-            Vector3 curVelocity = playerController.rb.velocity;
 
             Debug.Log($"Force applied: {Vector3.Magnitude(dashDirection*dashForce)}");
 

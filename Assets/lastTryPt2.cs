@@ -5,19 +5,11 @@ using UnityEngine.SceneManagement;
 
 namespace Shmoove
 {
-    public class MainMenu : MonoBehaviour
+    public class lastTryPt2 : MonoBehaviour
     {
         public void ToMainMenu()
         {
             SceneManager.LoadScene("Level 1- ashton");
-      public void PlayGame()
-        {
-            SceneManager.LoadScene("Level 1");
-        }
-
-        public void QuitGame()
-        {
-            Application.Quit();
         }
     }
 }
