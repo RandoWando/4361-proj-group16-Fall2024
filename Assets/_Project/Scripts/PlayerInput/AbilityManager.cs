@@ -144,8 +144,6 @@ namespace Shmoove
         // making it available in the editor and defining it
         [SerializeField] 
         private float dashForce = 30f;
-        [SerializeField] 
-        private float groundDashMultiplier = 5f;
 
         // constructor with the ability values and such
         public DashAbility()

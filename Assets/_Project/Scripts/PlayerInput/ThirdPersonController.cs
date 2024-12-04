@@ -39,7 +39,7 @@ namespace Shmoove
 
         [Header("Jumping")]
         [SerializeField]
-        private float jumpForce = 12f;
+        private float jumpForce = 50f;
         [SerializeField]
         private float gravityMultiplier = 3f;
         [SerializeField]
@@ -211,13 +211,13 @@ namespace Shmoove
         {
             if (context.performed && IsGrounded())
             {
-                Vector3 jumpForce = Vector3.up * this.jumpForce;
-                rb.AddForce(jumpForce, ForceMode.Impulse);
+                Vector3 jumpForce_ = Vector3.up * this.jumpForce;
+                rb.AddForce(jumpForce_, ForceMode.Impulse);
             }
             else if (context.performed && airJump > 0)
             {
-                Vector3 jumpForce = Vector3.up * this.jumpForce;
-                rb.AddForce(jumpForce, ForceMode.Impulse);
+                Vector3 jumpForce_ = Vector3.up * this.jumpForce;
+                rb.AddForce(jumpForce_, ForceMode.Impulse);
                 airJump--;
             }
         }
